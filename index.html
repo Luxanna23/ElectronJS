@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Photon</title>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/photon.css">
+    <style>
+        textarea {
+            width: 100%;
+            height: 100%;
+            resize: none;
+            border: none;
+            outline: none;
+            font-size: 20px;
+        }
+    </style>
+
+</head>
+
+<body>
+    <!-- Wrap your entire app inside .window -->
+    <div class="window">
+        <!-- .toolbar-header sits at the top of your app -->
+        <header class="toolbar toolbar-header">
+
+            <div class="toolbar-actions">
+                <div class="btn-group">
+                    <button class="btn btn-default" onclick="increaseFont()">
+                        <span class="icon icon-plus"></span>
+                    </button>
+                    <button class="btn btn-default" onclick="decreaseFont()">
+                        <span class="icon icon-minus"></span>
+                    </button>
+                    </button>
+                </div>
+
+                <button class="btn btn-default pull-right" onclick="saveText()">
+                    <span class="icon icon-download icon-text"></span>
+                    Save
+                </button>
+            </div>
+
+        </header>
+
+        <div class="window-content">
+            <textarea></textarea>
+        </div>
+
+    </div>
+    <script>
+        const electron = require('electron')
+        const { ipcRenderer } = electron
+        let textarea = document.querySelector('textarea')
+        let defaultFontSize = 20;
+
+        function increaseFont() {
+            textarea.style.fontSize = `${++defaultFontSize}px`
+        }
+
+        function decreaseFont() {
+            textarea.style.fontSize = `${--defaultFontSize}px`
+        }
+
+        function saveText() {
+            let text = textarea.value
+            console.log(text);
+            ipcRenderer.send('save', text);
+
+        }
+        ipcRenderer.on('background', (event, text) => {
+            console.log(text);
+            textarea.style.background = text;
+        })
+
+        const { app, Menu } = require('electron')
+        const isMac = process.platform === 'darwin'
+        const template = [
+            ...(isMac
+                ? [{
+                    label: app.name,
+                    submenu: [
+                        { role: 'about' },
+                    ]
+                }]
+                : []),
+            {
+                label: 'Save',
+                submenu: [
+                    {
+                        label: "Save",
+                        accelerator: "CommandOrControl+S",
+                        click: () => {
+
+                        }
+                    },
+                    {
+                        label: "Save As",
+                        accelerator: "CommandOrControl+Shift+S",
+                        click: () => {
+
+                        }
+                    }
+                ]
+            },
+            { role: 'editMenu'},
+            { role : "viewMenu"},
+        ]
+
+        const menu = Menu.buildFromTemplate(template)
+        Menu.setApplicationMenu(menu)
+    </script>
+</body>
+
+</html>
