@@ -74,42 +74,11 @@
             textarea.style.background = text;
         })
 
-        const { app, Menu } = require('electron')
-        const isMac = process.platform === 'darwin'
-        const template = [
-            ...(isMac
-                ? [{
-                    label: app.name,
-                    submenu: [
-                        { role: 'about' },
-                    ]
-                }]
-                : []),
-            {
-                label: 'Save',
-                submenu: [
-                    {
-                        label: "Save",
-                        accelerator: "CommandOrControl+S",
-                        click: () => {
+        ipcRenderer.on('savebutton', (event, text) => {
+            console.log(text);
+            saveText();
+        })
 
-                        }
-                    },
-                    {
-                        label: "Save As",
-                        accelerator: "CommandOrControl+Shift+S",
-                        click: () => {
-
-                        }
-                    }
-                ]
-            },
-            { role: 'editMenu'},
-            { role : "viewMenu"},
-        ]
-
-        const menu = Menu.buildFromTemplate(template)
-        Menu.setApplicationMenu(menu)
     </script>
 </body>
 
